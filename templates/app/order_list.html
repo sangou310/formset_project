@@ -1,0 +1,12 @@
+{% extends '_base.html' %}
+
+{% block content %}
+    <h1>Order List</h1>
+    {% for object in object_list %}
+        <div class="row">
+            <div class="col">{{ object.code }}</div>
+            <div class="col">{{ object.quantity }}</div>
+            <div class="col">{{ object.remarks }}</div>
+        </div>
+    {% endfor %}
+{% endblock content %}
