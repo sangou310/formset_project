@@ -1,40 +1,46 @@
 {% extends '_base.html' %}
 
 {% block content %}
-    <h1>Order追加</h1>
+    <h1>注文編集</h1>
 
     <form action="" method="post">
+        {% csrf_token %}
         {{ formset.management_form }}
         {{ formset.non_form_errors }}
-
         <table class="table table-sm table-borderless" id="orderTable">
+            <thead>
+            <tr>
+                <th>code</th>
+                <th class="col-2">注文数</th>
+                <th class="col-2">在庫数</th>
+                <th>削除</th>
+            </tr>
+            </thead>
+            <tbody>
             {% for form in formset %}
                 <tr>
-                    {% for visible in form.visible_fields %}
-                        <td>
-                            <div class="fieldWrapper">
-                                {% if forloop.parentloop.counter == 1 %}
-                                    {{ visible.label_tag }}
-                                {% endif %}
-                                {{ visible }}
-                                {{ visible.errors }}
-                            </div>
-                        </td>
-                    {% endfor %}
-                    <td class="text-right align-middle" id="id_form-{{ forloop.counter0 }}-zaiko"></td>
-                    {% for hidden in form.hidden_fields %}
-                        {{ hidden }}
-                    {% endfor %}
+                    <td>{{ form.code }}</td>
+                    <td>{{ form.quantity }}</td>
+                    <td class="align-middle" id="id_form-{{ forloop.counter0 }}-zaiko"></td>
+                    <td>{{ form.DELETE }}</td>
                 </tr>
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
             {% endfor %}
+            </tbody>
         </table>
-
-        {% csrf_token %}
         <button class="btn btn-primary" type="submit">保存</button>
     </form>
 {% endblock content %}
 
 {% block extrajs %}
+    <script>
+        jQuery(function ($) {
+            $("#orderAddLink").addClass('active');
+        });
+    </script>
+
     <script>
         jQuery(function ($) {
             {#var totalManageElement = $("input#id_form-TOTAL_FORMS");#}
@@ -44,9 +50,17 @@
                 stocks[{{ stock.pk }}] = {{ stock.quantity }};
             {% endfor %}
 
+            {# はじめからCode:に入力されていたら在庫数を表示する #}
+            {% for form in formset %}
+                {% if form.code.value %}
+                    $("#id_form-" + {{ forloop.counter0 }} +"-zaiko").text(stocks[{{ form.code.value }}].toLocaleString());
+                {% endif %}
+            {% endfor %}
+
+            {# Code:が変更されたら在庫数を更新する #}
             $("table#orderTable").on("change", "select", function () {
                 const changedRow = $(this).attr("id").match(/\d+/);
-                $("#id_form-" + changedRow + "-zaiko").text(stocks[$(this).val()]);
+                $("#id_form-" + changedRow + "-zaiko").text(stocks[$(this).val()].toLocaleString());
             });
         });
     </script>

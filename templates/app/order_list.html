@@ -1,12 +1,30 @@
 {% extends '_base.html' %}
 
 {% block content %}
-    <h1>Order List</h1>
-    {% for object in object_list %}
-        <div class="row">
-            <div class="col">{{ object.code }}</div>
-            <div class="col">{{ object.quantity }}</div>
-            <div class="col">{{ object.remarks }}</div>
-        </div>
-    {% endfor %}
+    <h1>注文一覧</h1>
+    <table class="table table-sm">
+        <thead>
+        <tr>
+            <th>code</th>
+            <th>注文数</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in order_list %}
+            <tr>
+                <td>{{ order.code }}</td>
+                <td>{{ order.quantity }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <p>{{ order_list|length }} 件</p>
 {% endblock content %}
+
+{% block extrajs %}
+    <script>
+        jQuery(function ($) {
+            $("#homeLink").addClass('active');
+        });
+    </script>
+{% endblock extrajs %}

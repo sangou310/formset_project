@@ -11,7 +11,7 @@ class OrderCreateForm(forms.ModelForm):
 
     class Meta:
         model = Order
-        fields = ['code', 'quantity', 'remarks']
+        fields = ['code', 'quantity']
 
 
 OrderCreateFormset = forms.modelformset_factory(
