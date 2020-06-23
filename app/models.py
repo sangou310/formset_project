@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.db import models
 
 
@@ -7,7 +9,7 @@ class Material(models.Model):
     name = models.CharField('部品名', max_length=50)
 
     def __str__(self):
-        return self.name
+        return f'{self.code} / {self.name}'
 
 
 class Stock(models.Model):
@@ -18,5 +20,6 @@ class Stock(models.Model):
 
 class Order(models.Model):
     """注文モデル"""
+    date = models.DateField('受注日', default=date.today)
     code = models.ForeignKey(Material, on_delete=models.CASCADE)
     quantity = models.IntegerField('注文数')

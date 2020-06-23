@@ -5,6 +5,7 @@
     <table class="table table-sm">
         <thead>
         <tr>
+            <th>受注日</th>
             <th>code</th>
             <th>注文数</th>
         </tr>
@@ -12,6 +13,7 @@
         <tbody>
         {% for order in order_list %}
             <tr>
+                <td>{{ order.date|date:'Y-m-d' }}</td>
                 <td>{{ order.code }}</td>
                 <td>{{ order.quantity }}</td>
             </tr>

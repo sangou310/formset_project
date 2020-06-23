@@ -1,6 +1,7 @@
 {% extends '_base.html' %}
 
 {% block content %}
+    {{ formset.media }}
     <h1>注文編集</h1>
 
     <form action="" method="post">
@@ -10,24 +11,36 @@
         <table class="table table-sm table-borderless" id="orderTable">
             <thead>
             <tr>
+                <th>受注日</th>
                 <th>code</th>
-                <th class="col-2">注文数</th>
-                <th class="col-2">在庫数</th>
+                <th>注文数</th>
+                <th>在庫数</th>
                 <th>削除</th>
             </tr>
             </thead>
             <tbody>
             {% for form in formset %}
                 <tr>
-                    <td>{{ form.code }}</td>
-                    <td>{{ form.quantity }}</td>
+                    <td>
+                        {{ form.date }}
+                        {{ form.date.errors }}
+                    </td>
+                    <td>
+                        {{ form.code }}
+                        {{ form.code.errors }}
+                    </td>
+                    <td>
+                        {{ form.quantity }}
+                        {{ form.quantity.errors }}
+                    </td>
                     <td class="align-middle" id="id_form-{{ forloop.counter0 }}-zaiko"></td>
-                    <td>{{ form.DELETE }}</td>
+                    <td class="align-middle">{{ form.DELETE }}</td>
                 </tr>
                 {% for hidden in form.hidden_fields %}
                     {{ hidden }}
                 {% endfor %}
             {% endfor %}
+
             </tbody>
         </table>
         <button class="btn btn-primary" type="submit">保存</button>
@@ -43,21 +56,19 @@
 
     <script>
         jQuery(function ($) {
-            {#var totalManageElement = $("input#id_form-TOTAL_FORMS");#}
-            {#var currentFormCount = parseInt(totalManageElement.val());#}
             const stocks = {};
             {% for stock in stock_list %}
                 stocks[{{ stock.pk }}] = {{ stock.quantity }};
             {% endfor %}
 
-            {# はじめからCode:に入力されていたら在庫数を表示する #}
+            {# はじめからCodeに入力されていたら在庫数を表示する #}
             {% for form in formset %}
                 {% if form.code.value %}
                     $("#id_form-" + {{ forloop.counter0 }} +"-zaiko").text(stocks[{{ form.code.value }}].toLocaleString());
                 {% endif %}
             {% endfor %}
 
-            {# Code:が変更されたら在庫数を更新する #}
+            {# Codeが変更されたら在庫数を更新する #}
             $("table#orderTable").on("change", "select", function () {
                 const changedRow = $(this).attr("id").match(/\d+/);
                 $("#id_form-" + changedRow + "-zaiko").text(stocks[$(this).val()].toLocaleString());

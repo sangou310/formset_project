@@ -13,9 +13,6 @@ class OrderListView(ListView):
 
 def add(request):
     formset = OrderCreateFormset(request.POST or None)
-    # 削除チェックボックスにclassを設定
-    for form in formset:
-        form.fields['DELETE'].widget.attrs['class'] = 'form-check'
 
     if request.method == 'POST' and formset.is_valid():
         formset.save()
